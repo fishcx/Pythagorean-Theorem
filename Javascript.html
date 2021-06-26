@@ -1,0 +1,487 @@
+<script>
+	$(document).ready(function() {
+    
+    $('.changeItem').change(function(){
+        $('#generate').click();
+    });
+
+    $(document).keypress(function (e) {
+        var key = e.which;
+         if(key == 13)  // the enter key code
+         {
+            $('#generate').click();
+             return false;  
+          }
+    });
+    
+    $('#video-button').hide();
+    $('#rotate-buttons').hide();
+    
+    var testing = false;
+    $('#generate').click(function(){
+        if(!testing){$("#answer").hide(); $("#show-answer").val("Show Answer");}
+        $('#plot').hide();
+
+        var type;
+        // handles the formatting for selecting any type
+        if($("#type").val()=="any"){type = random(1,3);}
+        else{type = parseInt($("#type").val())}
+
+        generate(type);  
+     });
+
+
+    $("#show-answer").click(function(){
+       if($("#answer").is(":hidden") ){
+          $("#answer").show();
+          $("#show-answer").val("Hide Answer");
+       } else{
+         $("#answer").hide();
+         $("#show-answer").val("Show Answer");
+        }
+    });
+    if(testing){ $("#answer").show();}
+    
+	});
+    
+    var a,b,labels,angle;
+    
+    $("#rot10ccw").click(function(){
+        angle = angle+10;
+        drawRightTriangle(determineCoords(a,b,labels,angle));
+        //$("#angle").html("Angle: "+angle);
+    });
+    
+    $("#rot10cw").click(function(){
+        angle = angle-10;
+        drawRightTriangle(determineCoords(a,b,labels,angle));
+        //$("#angle").html("Angle: "+angle);
+    });
+    
+	function generate(type){
+       
+       var videoLinks = ["https://www.youtube.com/watch?v=ScFK6OQW1Ck",
+                         "https://www.youtube.com/watch?v=1suAHTN9Og4",
+                         "https://www.youtube.com/watch?v=60_k2wV-Tak"];
+       
+       if(videoLinks[type-1].length != 0){ 
+         $("#videoLink"). attr("href", videoLinks[type-1]);
+         $('#video-button').show();
+       }
+       else{
+         $('#video-button').hide();
+       } 
+       
+       var problem = "";
+       var answer = "";
+       var c,d,e,f,g,h;
+       $("#generated").html("");
+       $("#answer").html("");
+       
+       g = random(2,9); 
+       h = random(1,5)+g; 
+           
+       c = Math.round((h**2+g**2)*100000)/100000;
+       a = Math.round((h**2-g**2)*100000)/100000;
+       b = Math.round((2*h*g)*100000)/100000;
+       
+       switch(type) {
+           // Determine Missing Lengths
+           case 1: 
+                      
+           problem = "Given the right triangle below, find the length of \\(x\\)";
+           
+           switch(random(0,2)){
+           
+              case 0:
+              labels = [a,b,"x"];
+              answer= "\\(x = "+c+"\\)";  
+              break;
+              
+              case 1:
+              labels = [a,"x",c];
+              answer= "\\(x = "+b+"\\)";  
+              break;
+              
+              case 2:
+              labels = ["x",b,c];
+              answer= "\\(x = "+a+"\\)";  
+              break;
+              
+           }
+           angle = random(0,36)*10;
+           drawRightTriangle(determineCoords(a,b,labels,angle));
+           $('#plot').show();
+           $('#rotate-buttons').show();
+           
+           break;
+           
+           // Is it a Right Triangle?
+           case 2:
+           
+           $('#rotate-buttons').hide();
+           
+           switch(random(0,6)){
+           
+              case 0: case 1: case 2: case 3:
+              answer = "Yes, since \\("+a+"^2 + "+b+"^2 = "+c+"^2\\)";              
+              break;
+              
+              case 4:
+              a = a+non_zero_random(-4,4);
+              // reorder a,b,c if a is greater than c now so that c is the greatest
+              if(a > c){
+                e = c;
+                c = a;
+                a = e;
+              }
+              answer = "No, since \\("+a+"^2 + "+b+"^2 \\neq "+c+"^2\\)";
+              break;
+              
+              case 5:
+              b = b+non_zero_random(-4,4);
+              // reorder a,b,c if b is greater than c now so that c is the greatest
+              if(b > c){
+                e = c;
+                c = b;
+                b = e;
+              }
+              answer = "No, since \\("+a+"^2 + "+b+"^2 \\neq "+c+"^2\\)";
+              break;
+              
+              case 6:
+              c = c+random(1,5);
+              answer = "No, since \\("+a+"^2 + "+b+"^2 \\neq "+c+"^2\\)";
+              break;
+           
+           }
+           var lengths = "";
+           switch(random(0,5)){
+           
+              case 0: lengths = a+", "+b+"\\), and \\("+c; break;
+              case 1: lengths = a+", "+c+"\\), and \\("+b; break;
+              case 2: lengths = b+", "+a+"\\), and \\("+c; break;
+              case 3: lengths = b+", "+c+"\\), and \\("+a; break;
+              case 4: lengths = c+", "+a+"\\), and \\("+b; break;
+              case 5: lengths = c+", "+b+"\\), and \\("+a; break;
+           
+           }
+           
+           problem = "Given a triangle with lengths \\("+lengths+"\\), is this a right triangle?";
+           
+           break;
+           
+           // Distance between Two Points
+           case 3:
+           
+           $('#rotate-buttons').hide();
+           
+           var x1 = random(-9,9);
+           do{var x2 = random(-9,9);} while(x1 == x2);  // forces the values to be different
+           var y1 = random(-9,9);
+           do{var y2 = random(-9,9); } while(y1 == y2); // forces the values to be different
+           var distance = Math.round(((x1-x2)**2+(y1-y2)**2)*10000)/10000;
+           
+           drawPoints(x1,y1,x2,y2);
+           $('#plot').show();
+           problem = "Find the distance between the points on the grid below";
+           answer = "Distance = \\(\\sqrt{"+distance+"}\\)";
+           
+           if(Number.isInteger(Math.sqrt(distance))){
+           
+              answer += "\\( = "+Math.sqrt(distance)+"\\)";
+              
+           }
+           
+           break;
+		  
+       }
+            
+       $("#generated").html(problem);
+       $("#answer").html(doublesigns(answer));
+       renderMathInElement(document.body);
+	}
+	
+    // helper function which takes in a, b, c and determines how to make coordinates which are centered in 11 x 11 grid to allow for any rotation
+    function determineCoords(a,b,lengthLabels,angle){
+       
+       var width = Math.max(a,b);
+       var sf = 15/width; // determine a scale factor to resize lengths to fit within 11 x 11 grid. Can make the size at most 22
+       a = Math.round((a*sf)*100000)/100000;
+       b = Math.round((b*sf)*100000)/100000;
+       var xValues = [b/2,b/2,-b/2,b/2];
+       var yValues = [a/2,-a/2,-a/2,a/2];
+       var boxSize = 1;
+       // box for right angle
+       xValues.push(b/2,b/2,b/2-boxSize,b/2-boxSize,b/2);
+       yValues.push(-a/2,-a/2+boxSize,-a/2+boxSize,-a/2,-a/2);
+       
+       var xLabels = [b/2+1,0,-1];
+       var yLabels = [0,-a/2-1.5,1];
+        
+       // rotate the coordinates 
+       var newCoords = rotateCoordinates(angle,xValues,yValues);
+       xValues = newCoords[0];
+       yValues = newCoords[1];
+       
+       var newLabels = rotateCoordinates(angle,xLabels,yLabels);
+       xLabels = newLabels[0];
+       yLabels = newLabels[1];
+
+       return [xValues,yValues,xLabels,yLabels,lengthLabels];
+    }
+    
+    // helper function to multiply every item in an array by a number
+    function rotateCoordinates(angle,xArray,yArray){
+       
+       var newX = [];
+       var newY = [];
+       
+       var newCoords;
+       
+       var radians = (Math.PI / 180) * angle;
+       
+       for(var i = 0; i < xArray.length; i++) {
+	         newX[i] = Math.cos(radians)*xArray[i]-Math.sin(radians)*yArray[i];
+             newY[i] = Math.sin(radians)*xArray[i]+Math.cos(radians)*yArray[i];
+        }
+        
+        return [newX,newY];
+       
+    }
+    
+    // unused helper function to rotate around a different center (cx, cy)
+    function rotate(cx, cy, x, y, angle) {
+    var radians = (Math.PI / 180) * angle;
+        var cos = Math.cos(radians);
+        var sin = Math.sin(radians);
+        var nx = (cos * (x - cx)) + (sin * (y - cy)) + cx;
+        var ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+    return [nx, ny];
+}
+    
+    
+    function drawRightTriangle(coordinates){
+    try {
+   
+      // render the points using plotly
+      var trace1 = {
+        x: coordinates[0],
+        y: coordinates[1],
+        type: 'scatter',
+        mode: 'lines+markers', 
+        marker: {size: 3,color: '#3F4591',},
+        name:"",
+      };
+      
+      var axis_template ={
+        showgrid: false,
+        zeroline: false,
+        nticks: 23,
+        range: [-11,11], 
+        showticklabels:false
+      };        
+      
+      // make grid smaller for mobile
+      var gridsize;
+      var indent;
+      // gridsize= Math.min(.95*window.innerWidth,550);
+      
+      if(window.innerWidth > 601){
+         gridsize = 500;
+         indent = 20;
+      }else{
+         gridsize = 300;
+         indent = 0;
+      }
+      
+      var layout = {
+        xaxis:axis_template,
+        yaxis:axis_template,
+        showlegend: false,
+        width: gridsize,
+        height: gridsize,
+        hovermode: 'closest',   
+        font:{size: 18},
+        margin: {l: indent,  r: 30, t: 20}
+      };
+      
+      var lengthLabels =   {
+        x: coordinates[2],
+        y: coordinates[3],
+        mode: 'text',
+        text:coordinates[4],
+        textposition:"center",
+        textfont: {
+          size:17,
+        },
+        hoverinfo:'none'
+      };   
+      
+      var data = [trace1,lengthLabels];
+      Plotly.newPlot('plot', data, layout,{displayModeBar: false});
+    }
+    catch (err) {
+      console.error(err)
+      alert(err)
+    }
+    
+    }
+    
+    // function that draws the graph between -10 and 10
+    function drawPoints(x1,y1,x2,y2) {
+    try {
+   
+      // render the points using plotly
+      var trace1 = {
+        x: [x1,x2],
+        y: [y1, y2],
+        type: 'scatter',
+        mode: 'markers', 
+        marker: {size: 12,color: '#3F4591',},
+        name:"",
+      };
+      
+      var axis_template ={
+        showgrid: true,
+        zeroline: true,
+        nticks: 23,
+        range: [-11,11], 
+        gridcolor: '#bdbdbd', //grid color
+        gridwidth: 1.2, //grid width
+        zerolinecolor: 'black', // axes color
+        zerolinewidth: 1.5, // axes widths
+        showticklabels:false
+      };        
+      
+      // make grid smaller for mobile
+      var gridsize;
+      var indent;
+      // gridsize= Math.min(.95*window.innerWidth,550);
+      
+      if(window.innerWidth > 601){
+         gridsize = 550;
+         indent = 20;
+      }else{
+         gridsize = 350;
+         indent = 0;
+      }
+      
+      var xTickMarkLabels =   {
+        x: [-10.1,-9.1,-8.1,-7.1,-6.1,-5.1,-4.1,-3.1,-2.1,-1.1,0,1,2,3,4,5,6,7,8,9,10],
+        y: [-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1],
+        mode: 'text',
+        text:[-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10],
+        textposition:"bottom",
+        textfont: {
+          size:13,
+        },
+        hoverinfo:'none'
+      };   
+      
+      var yTickMarkLabels =   {
+        y: [-10.1,-9.1,-8.1,-7.1,-6.1,-5.1,-4.1,-3.1,-2.1,-1.1,0,1,2,3,4,5,6,7,8,9,10],
+        x: [-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1],
+        mode: 'text',
+        text:[-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10],
+        textposition:"left",
+        textfont: {
+          size:13,
+        },
+        hoverinfo:'none'
+      };
+      
+      var layout = {
+        xaxis:axis_template,
+        yaxis:axis_template,
+        showlegend: false,
+        width: gridsize,
+        height: gridsize,
+        hovermode: 'closest',   
+        font:{size: 18},
+        margin: {l: indent,  r: 30, t: 20}
+      };
+      
+      
+      layout.annotations= [
+      {
+         x: 0,
+         y: 11,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: 0,
+         ay: 35
+       },
+       {
+         x: 0,
+         y: -11,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: 0,
+         ay: -35
+       },
+       {
+         x: 11,
+         y: 0,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: -35,
+         ay: 0
+       },
+       {
+         x: -11,
+         y: 0,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: 35,
+         ay: 0
+       }
+
+     ];
+      var data = [trace1,xTickMarkLabels,yTickMarkLabels];
+      Plotly.newPlot('plot', data, layout,{displayModeBar: false});
+    }
+    catch (err) {
+      console.error(err)
+      alert(err)
+    }
+  }
+    
+    
+    // removes all double signs
+    function doublesigns(string){
+       return string.replaceAll("-+", "-").replaceAll("- +", "-").replaceAll("+ -", "-").replaceAll("- -", "+").replaceAll("+-", "-").replaceAll("-- ", "+");
+    }
+    
+    String.prototype.replaceAll = function(searchStr, replaceStr) {
+	   var str = this;
+       // no match exists in string?
+       if(str.indexOf(searchStr) === -1) {
+          // return string
+          return str;
+       }
+      // replace and remove first match, and do another recursirve search/replace
+       return (str.replace(searchStr, replaceStr)).replaceAll(searchStr, replaceStr);
+    }
+    
+    // random integer between and including min and max
+	function random(min, max) {
+         return Math.floor(Math.random() * (max - min + 1) ) + min;
+    } 
+    
+    // random non-zero integer bewteen min and max
+    function non_zero_random(min, max) {
+         var output;
+         do{output = Math.floor(Math.random() * (max - min + 1) ) + min;} while (output === 0);  
+         return output;
+    } 
+
+</script>
