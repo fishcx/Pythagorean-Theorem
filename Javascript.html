@@ -24,7 +24,7 @@
 
         var type;
         // handles the formatting for selecting any type
-        if($("#type").val()=="any"){type = random(1,3);}
+        if($("#type").val()=="any"){type = random(1,4);}
         else{type = parseInt($("#type").val())}
 
         generate(type);  
@@ -62,7 +62,8 @@
        
        var videoLinks = ["https://www.youtube.com/watch?v=ScFK6OQW1Ck",
                          "https://www.youtube.com/watch?v=1suAHTN9Og4",
-                         "https://www.youtube.com/watch?v=60_k2wV-Tak"];
+                         "https://www.youtube.com/watch?v=60_k2wV-Tak",
+                         ""];
        
        if(videoLinks[type-1].length != 0){ 
          $("#videoLink"). attr("href", videoLinks[type-1]);
@@ -195,6 +196,31 @@
            
            break;
 		  
+          // Area Equations
+          case 4:
+
+              var a = random(2,15);
+              var b = a*a;
+              var c = b*b;
+
+              switch(random(0,1)){
+              
+              // x^2 = val
+              case 0:
+              eq = equationSwap("x^2",b); 
+              problem = "\\("+eq+"\\)";
+              answer = "\\(x = "+a+"\\)"; 
+              break;
+              
+              // sqrtx = val
+              case 1:
+              eq = equationSwap("\\sqrt{x}",b); 
+              problem = "\\("+eq+"\\)";
+              answer = "\\(x = "+c+"\\)"; 
+              break;
+          
+           }
+           break;
        }
             
        $("#generated").html(problem);
@@ -495,5 +521,22 @@
          do{output = Math.floor(Math.random() * (max - min + 1) ) + min;} while (output === 0);  
          return output;
     } 
-
+// function to randomize the sides of the equation
+    function equationSwap(left,right){
+        
+        var output = "";
+        switch(random(0,1)){
+           
+           case 0:
+           output = left+" = "+right;
+           break;
+           
+           case 1:
+           output = right+" = "+left;
+           break;
+        
+        }
+        
+        return output;
+    }
 </script>
