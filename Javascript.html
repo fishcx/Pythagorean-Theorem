@@ -199,24 +199,24 @@
           // Area Equations
           case 4:
 
-              var a = random(2,15);
-              var b = a*a;
-              var c = b*b;
+              var num1 = random(2,15);
+              var num2 = num1*num1;
+              var num3 = num2*num2;
 
               switch(random(0,1)){
               
               // x^2 = val
               case 0:
-              eq = equationSwap("x^2",b); 
+              eq = equationSwap("x^2",num2); 
               problem = "\\("+eq+"\\)";
-              answer = "\\(x = "+a+"\\)"; 
+              answer = "\\(x = "+num1+"\\)"; 
               break;
               
               // sqrtx = val
               case 1:
-              eq = equationSwap("\\sqrt{x}",b); 
+              eq = equationSwap("\\sqrt{x}",num2); 
               problem = "\\("+eq+"\\)";
-              answer = "\\(x = "+c+"\\)"; 
+              answer = "\\(x = "+num3+"\\)"; 
               break;
           
            }
