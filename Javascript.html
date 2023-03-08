@@ -72,7 +72,13 @@
        else{
          $('#video-button').hide();
        } 
-       
+
+       if(type == 1){
+          $('#rotate-buttons').show();
+       }
+       else{
+          $('#rotate-buttons').hide();
+       }
        var problem = "";
        var answer = "";
        var c,d,e,f,g,h;
@@ -113,14 +119,11 @@
            angle = random(0,36)*10;
            drawRightTriangle(determineCoords(a,b,labels,angle));
            $('#plot').show();
-           $('#rotate-buttons').show();
            
            break;
            
            // Is it a Right Triangle?
            case 2:
-           
-           $('#rotate-buttons').hide();
            
            switch(random(0,6)){
            
@@ -175,8 +178,6 @@
            // Distance between Two Points
            case 3:
            
-           $('#rotate-buttons').hide();
-           
            var x1 = random(-9,9);
            do{var x2 = random(-9,9);} while(x1 == x2);  // forces the values to be different
            var y1 = random(-9,9);
@@ -198,8 +199,6 @@
 		  
           // Area Equations
           case 4:
-
-              $('#rotate-buttons').hide();
 
               var num1 = random(2,15);
               var num2 = num1*num1;
