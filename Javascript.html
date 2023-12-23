@@ -24,7 +24,7 @@
 
         var type;
         // handles the formatting for selecting any type
-        if($("#type").val()=="any"){type = random(1,4);}
+        if($("#type").val()=="any"){type = random(1,5);}
         else{type = parseInt($("#type").val())}
 
         generate(type);  
@@ -63,7 +63,8 @@
        var videoLinks = ["https://www.youtube.com/watch?v=ScFK6OQW1Ck",
                          "https://www.youtube.com/watch?v=1suAHTN9Og4",
                          "https://www.youtube.com/watch?v=60_k2wV-Tak",
-                         "https://www.youtube.com/watch?v=n3KusavvBcw"];
+                         "https://www.youtube.com/watch?v=n3KusavvBcw",
+                         ""];
        
        if(videoLinks[type-1].length != 0){ 
          $("#videoLink"). attr("href", videoLinks[type-1]);
@@ -222,6 +223,21 @@
           
            }
            break;
+
+           // Area on Grid
+           case 5: 
+          // starting shape
+           var shape = generateTriangle(-8,8); 
+           var rectFrame = getRectangle(shape);
+           drawAreaTriangle([[rectFrame.xVals,rectFrame.yVals],[shape.xVals,shape.yVals]],'plot');
+           $('#plot').show();  
+           problem = "Determine the area of the blue triangle."
+           var triArea = areaTriangleCoords(shape);
+           var rectArea = areaRectCoords(rectFrame);
+           var diff = rectArea-triArea;
+           answer = "Rectangle Area: \\("+rectArea+"\\). Outer Triangle Area Total: \\("+diff+"\\)<br>Blue triangle area: \\("+rectArea+" - "+diff+" = "+triArea+"\\)";
+           
+           break;
        }
             
        $("#generated").html(problem);
@@ -355,6 +371,156 @@
     
     }
     
+    // function that draws the shapes using coordinates
+    function drawAreaTriangle(shapes, location) {
+    
+    // shapes = [ [xVals[], yVals[], letters[]], [xVals[], yVals[], letters[]]...]
+     
+     // draw each shape a different color
+     var colors = ['#129649','#3F4591', '#6339a8','#ce3b21','#ed9025'];
+     
+     var data = [];
+      // for each shape, create a trace using the coordinates and lines connecting them
+      for(var i = 0; i < shapes.length; i++){
+  
+         var newTrace = {  
+            x: shapes[i][0],
+            y: shapes[i][1],
+            type: 'scatter',
+            mode: 'lines+markers+text',        
+            line: {
+              color: colors[i],
+              width: 2
+            },
+            text: shapes[i][2],
+            textposition: 'bottom',
+            name:"",
+         };
+         
+         data.push(newTrace);
+      }
+      
+      var axis_template ={
+        showgrid: true,
+        zeroline: true,
+        nticks: 23,
+        range: [-11,11], 
+        gridcolor: '#BDBDBD', //grid color
+        gridwidth: 1.2, //grid width
+        zerolinecolor: 'black', // axes color
+        zerolinewidth: 1.5, // axes widths
+        showticklabels:false
+      };        
+      
+      var xTickMarkLabels =   {
+        x: [-10.1,-9.1,-8.1,-7.1,-6.1,-5.1,-4.1,-3.1,-2.1,-1.1,0,1,2,3,4,5,6,7,8,9,10],
+        y: [-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1],
+        mode: 'text',
+        text:[-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10],
+        textposition:"bottom",
+        textfont: {
+          size:13,
+        },
+        hoverinfo:'none'
+      };   
+      
+      var yTickMarkLabels =   {
+        y: [-10.1,-9.1,-8.1,-7.1,-6.1,-5.1,-4.1,-3.1,-2.1,-1.1,0,1,2,3,4,5,6,7,8,9,10],
+        x: [-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1],
+        mode: 'text',
+        text:[-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10],
+        textposition:"left",
+        textfont: {
+          size:13,
+        },
+        hoverinfo:'none'
+      };
+      
+      var axisMarkers =   {
+        x: [-0.25,10.75],
+        y: [10.75,-0.25],
+        mode: 'text',
+        text:["y","x"],
+        textposition:["left","bottom"],
+        textfont: {
+          size:18,
+        },
+        hoverinfo:'none'
+      };
+
+      // make grid smaller for mobile
+      var gridsize;
+      var indent;
+      // gridsize= Math.min(.95*window.innerWidth,550);
+      
+      if(window.innerWidth > 601){
+         gridsize = 550;
+         indent = 20;
+      }else{
+         gridsize = 350;
+         indent = 0;
+      }
+      
+      var layout = {
+        xaxis:axis_template,
+        yaxis:axis_template,
+        showlegend: false,
+        width: gridsize,
+        height: gridsize,
+        hovermode: 'closest',   
+        font:{size: 18},
+        margin: {l: indent,  r: 30, t: 20}
+      };
+      
+      layout.annotations= [
+      {
+         x: 0,
+         y: 11,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: 0,
+         ay: 35
+       },
+       {
+         x: 0,
+         y: -11,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: 0,
+         ay: -35
+       },
+       {
+         x: 11,
+         y: 0,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: -35,
+         ay: 0
+       },
+       {
+         x: -11,
+         y: 0,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: 35,
+         ay: 0
+       }
+
+     ];
+     
+     data.push(xTickMarkLabels,yTickMarkLabels,axisMarkers);
+      
+      Plotly.newPlot(location, data, layout,{displayModeBar: false});
+  }
+
     // function that draws the graph between -10 and 10
     function drawPoints(x1,y1,x2,y2) {
     try {
@@ -493,8 +659,80 @@
       alert(err)
     }
   }
+    // helper function to generate a triangle within 10 by 10 grid
+    function generateTriangle(min,max){
+       
+       var xValues = [];
+       var yValues = [];
+       var letters = [];
+       var x1,x2,x3,x4,y1,y2,y3,y4;
+       
+       // **Important** Needed to change max & min x & y values to be 8 and -8 so that 
+       // in translate(), the non_zero_random doesn't loop forever between 0 and 0
+       // Happens when max is 9 and min is -9 for either x or y
+      
+         x1 = random(min, max/2); 
+         y1 = random(min, max/2); 
+         x2 = random(x1+1, max); 
+         y2 = random(min, max/2); 
+         x3 = random(x1,x2);
+         y3 = random(Math.max(y1,y2)+1, max); 
+         
+         xValues = [x1,x2,x3,x1];
+         yValues = [y1,y2,y3,y1];
+
+      return {xVals:xValues,yVals:yValues};
+      
+    }
     
-    
+    // helper function to get outer rectangle from triangle shape
+    function getRectangle(shape){
+
+        var triXvalues = shape.xVals;
+        var triYvalues = shape.yVals;
+        var rectXValues = [];
+        var rectYValues = [];
+
+        var x1,x2,y1,y2;
+
+        x1 = Math.min(...triXvalues);
+        y1 = Math.max(...triYvalues);
+        x2 = Math.max(...triXvalues);
+        y2 = Math.min(...triYvalues);
+
+        rectXValues = [x1,x2,x2,x1,x1];
+        rectYValues = [y1,y1,y2,y2,y1];
+
+        return {xVals:rectXValues,yVals:rectYValues};
+
+    }
+
+    // helper function to calculate the area of a given triangle
+    function areaTriangleCoords(triangle){
+
+        var triXvalues = triangle.xVals;
+        var triYvalues = triangle.yVals;
+
+        var x1 = triXvalues[0]; var x2 = triXvalues[1]; var x3 = triXvalues[2]; 
+        var y1 = triYvalues[0]; var y2 = triYvalues[1]; var y3 = triYvalues[2];
+
+        return formatDec(0.5*Math.abs(x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2)));
+
+    }
+
+    // helper function to calculate the area of a given rectangle
+    function areaRectCoords(rectangle){
+
+        var recXvalues = rectangle.xVals;
+        var recYvalues = rectangle.yVals;
+
+        var x1 = recXvalues[0]; var x2 = recXvalues[1];
+        var y1 = recYvalues[0]; var y2 = recYvalues[2]; // the first two y coordinates are the same
+
+        return formatDec(Math.abs(x2-x1)*Math.abs(y2-y1));
+
+    }
+
     // removes all double signs
     function doublesigns(string){
        return string.replaceAll("-+", "-").replaceAll("- +", "-").replaceAll("+ -", "-").replaceAll("- -", "+").replaceAll("+-", "-").replaceAll("-- ", "+");
@@ -540,4 +778,11 @@
         
         return output;
     }
+
+    // use this for complicated calculations to format the decimal correctly for floating point errors
+   function formatDec(a){
+   
+     return Math.round(a*100000)/100000;
+   
+   }
 </script>
