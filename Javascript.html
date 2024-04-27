@@ -1,6 +1,6 @@
 <script>
 	$(document).ready(function() {
-    
+
     $('.changeItem').change(function(){
         $('#generate').click();
     });
@@ -26,7 +26,7 @@
         // handles the formatting for selecting any type
         if($("#type").val()=="any"){type = random(1,5);}
         else{type = parseInt($("#type").val())}
-
+        $("#currentType").val(type);
         generate(type);  
      });
 
@@ -48,14 +48,16 @@
     
     $("#rot10ccw").click(function(){
         angle = angle+10;
-        drawRightTriangle(determineCoords(a,b,labels,angle));
-        //$("#angle").html("Angle: "+angle);
+        var isCon = false;
+        if($("#currentType").val()==2){isCon = true;}
+        drawRightTriangle(determineCoords(a,b,labels,angle,isCon));
     });
     
     $("#rot10cw").click(function(){
         angle = angle-10;
-        drawRightTriangle(determineCoords(a,b,labels,angle));
-        //$("#angle").html("Angle: "+angle);
+        var isCon = false;
+        if($("#currentType").val()==2){isCon = true;}
+        drawRightTriangle(determineCoords(a,b,labels,angle,isCon));
     });
     
 	function generate(type){
@@ -74,7 +76,7 @@
          $('#video-button').hide();
        } 
 
-       if(type == 1){
+       if(type == 1 || type == 2){
           $('#rotate-buttons').show();
        }
        else{
@@ -118,12 +120,12 @@
               
            }
            angle = random(0,36)*10;
-           drawRightTriangle(determineCoords(a,b,labels,angle));
+           drawRightTriangle(determineCoords(a,b,labels,angle,false));
            $('#plot').show();
            
            break;
            
-           // Is it a Right Triangle?
+           // Converse: Is it a Right Triangle?
            case 2:
            
            switch(random(0,6)){
@@ -160,6 +162,7 @@
               break;
            
            }
+           /*
            var lengths = "";
            switch(random(0,5)){
            
@@ -173,7 +176,15 @@
            }
            
            problem = "Given a triangle with lengths \\("+lengths+"\\), is this a right triangle?";
+           */
+
+           problem = "Using the side lengths, is the triangle below a right triangle?";
+           labels = [a,b,c];
            
+           angle = random(0,36)*10;
+           drawRightTriangle(determineCoords(a,b,labels,angle,true)); // true tells the function not to draw the right angle box
+           $('#plot').show();
+
            break;
            
            // Distance between Two Points
@@ -263,7 +274,7 @@
 	}
 	
     // helper function which takes in a, b, c and determines how to make coordinates which are centered in 11 x 11 grid to allow for any rotation
-    function determineCoords(a,b,lengthLabels,angle){
+    function determineCoords(a,b,lengthLabels,angle,converse){
        
        var width = Math.max(a,b);
        var sf = 15/width; // determine a scale factor to resize lengths to fit within 11 x 11 grid. Can make the size at most 22
@@ -272,10 +283,11 @@
        var xValues = [b/2,b/2,-b/2,b/2];
        var yValues = [a/2,-a/2,-a/2,a/2];
        var boxSize = 1;
-       // box for right angle
-       xValues.push(b/2,b/2,b/2-boxSize,b/2-boxSize,b/2);
-       yValues.push(-a/2,-a/2+boxSize,-a/2+boxSize,-a/2,-a/2);
-       
+       if(!converse){
+        // box for right angle
+        xValues.push(b/2,b/2,b/2-boxSize,b/2-boxSize,b/2);
+        yValues.push(-a/2,-a/2+boxSize,-a/2+boxSize,-a/2,-a/2);
+       }
        var xLabels = [b/2+1,0,-1];
        var yLabels = [0,-a/2-1.5,1];
         
@@ -387,7 +399,7 @@
     }
     
     }
-    
+
     // function that draws the shapes using coordinates
     function drawAreaTriangle(shapes, location) {
     
