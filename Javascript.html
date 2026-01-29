@@ -24,7 +24,7 @@
 
         var type;
         // handles the formatting for selecting any type
-        if($("#type").val()=="any"){type = random(1,5);}
+        if($("#type").val()=="any"){type = random(1,6);}
         else{type = parseInt($("#type").val())}
         $("#currentType").val(type);
         generate(type);  
@@ -66,7 +66,8 @@
                          "https://www.youtube.com/watch?v=1suAHTN9Og4",
                          "https://www.youtube.com/watch?v=60_k2wV-Tak",
                          "https://www.youtube.com/watch?v=n3KusavvBcw",
-                         "https://www.youtube.com/watch?v=QYVLibwCZfk"];
+                         "https://www.youtube.com/watch?v=QYVLibwCZfk",
+                         ""];
        
        if(videoLinks[type-1].length != 0){ 
          $("#videoLink"). attr("href", videoLinks[type-1]);
@@ -265,6 +266,49 @@
            var diff = rectArea-area;
            answer = "Rectangle Area: \\("+rectArea+"\\). Outer "+shapeName+" total area: \\("+diff+"\\)<br>Blue "+shapeName+" area: \\("+rectArea+" - "+diff+" = "+area+"\\)";
            
+           break;
+
+           // Rational or Irrational
+          case 6:
+
+             var num1, num2, num3;
+
+              switch(random(0,1)){
+              
+              // \sqrt(num)
+              case 0: 
+                // ensure it is a perfect square
+                if(random(0,1)==0){ num1 = random(2,12); num2 = num1*num1; }
+                else { num2 = random(2, 200); }
+
+              answer = `\\(\\sqrt{${num2}}=${Math.sqrt(num2)}\\)`;
+              if( Number.isInteger(Math.sqrt(num2))){ answer+= `, which is rational.` }else{ answer += `..., which is irrational.`}
+              problem = `\\(\\sqrt{${num2}}\\)`;
+              break;
+              
+              // \sqrt(num)+\sqrt(num)
+              case 1:
+
+              num1 = random(2,12); num2 = num1*num1; 
+              num3 = random(2,200);
+
+              var values = shuffle([num2,num3]); // mix them up so the perfect square isn't always first
+              
+              var adding = false;
+              var sym = " - ";
+              if(random(0,1)==0){ adding = true; sym = " + ";}
+
+              problem = `\\(\\sqrt{${values[0]}}${sym}\\sqrt{${values[1]}}\\)`;
+
+              var sqrAns;
+              if(adding){ sqrAns = Math.sqrt(values[0])+Math.sqrt(values[1]); }else{ sqrAns = Math.sqrt(values[0])-Math.sqrt(values[1]); }
+
+              answer = `\\(\\sqrt{${values[0]}}${sym}\\sqrt{${values[1]}}=${sqrAns}\\)`;
+              if( Number.isInteger(sqrAns)){ answer+= `, which is rational.` }else{ answer += `..., which is irrational.`}
+
+              break;
+          
+           }
            break;
        }
             
@@ -1042,4 +1086,9 @@
      return Math.round(a*100000)/100000;
    
    }
+
+   function shuffle(array) {
+       array.sort(() => Math.random() - 0.5);
+       return array;
+    }
 </script>
