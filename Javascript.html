@@ -199,13 +199,26 @@
            
            drawPoints(x1,y1,x2,y2);
            $('#plot').show();
-           problem = "Find the distance between the points on the grid below";
+           problem = "Find the distance between the points on the grid below.";
            answer = "Distance = \\(\\sqrt{"+distance+"}\\)";
            
            if(Number.isInteger(Math.sqrt(distance))){
            
               answer += "\\( = "+Math.sqrt(distance)+"\\)";
               
+           }else{
+            
+              problem += " Write your answer in square root form and then round to the nearest ";
+
+              if(random(0,1)==0){ 
+                problem += "tenth.";
+                answer += `\\( \\approx ${Math.round(Math.sqrt(distance)*10)/10} \\)`;
+              } 
+              else { 
+                problem += "hundredth." 
+                answer += `\\( \\approx ${Math.round(Math.sqrt(distance)*100)/100} \\)`;
+              }
+
            }
            
            break;
