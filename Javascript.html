@@ -255,7 +255,8 @@
 
           var shape, shapeName,area;
 
-          switch(random(0,1)){
+          switch(1){
+          //switch(random(0,1)){ // focus only on squares
               // triangle
               case 0:
               shape = generateTriangle(-8,8);
@@ -265,7 +266,7 @@
 
               //square
               case 1:
-              shape = generateTiltedSquare(-8,8);
+              shape = generateTiltedSquare(-6,6);
               shapeName = "square";
               area = shape.a;
               break;
@@ -274,10 +275,10 @@
            var rectFrame = getRectangle(shape);
            drawAreaShape([[rectFrame.xVals,rectFrame.yVals],[shape.xVals,shape.yVals]],'plot');
            $('#plot').show();  
-           problem = "Determine the area of the blue "+shapeName+"."
+           problem = "Determine the area of the blue "+shapeName+" and find the length of its side in square root form."
            var rectArea = areaRectCoords(rectFrame);
            var diff = rectArea-area;
-           answer = "Rectangle Area: \\("+rectArea+"\\). Outer "+shapeName+" total area: \\("+diff+"\\)<br>Blue "+shapeName+" area: \\("+rectArea+" - "+diff+" = "+area+"\\)";
+           answer = "Blue "+shapeName+" area: \\("+rectArea+" - "+diff+" = "+area+"\\). Side length: \\(\\sqrt{"+area+"}\\)";
            
            break;
 
@@ -642,11 +643,11 @@
       var axis_template ={
         showgrid: true,
         zeroline: false,
-        nticks: 23,
-        range: [-11,11], 
+        nticks: 15,
+        range: [-7,7], 
         griddash: "dot",
         gridcolor: '#BDBDBD', //grid color
-        gridwidth: 1.2, //grid width
+        gridwidth: 1.3, //grid width
         //zerolinecolor: 'black', // axes color
         //zerolinewidth: 1.5, // axes widths
         showticklabels:false
@@ -942,9 +943,8 @@
        // in translate(), the non_zero_random doesn't loop forever between 0 and 0
        // Happens when max is 9 and min is -9 for either x or y
       
-         // starting coords in the "middle" on the left of the grid (shape can be rotated later)
-         x1 = random(min/2, max/2); 
-         y1 = random(min, max); 
+         x1 = min+2; 
+         y1 = min+2; 
 
         var change1 = 0;
         var change2 = 0;
